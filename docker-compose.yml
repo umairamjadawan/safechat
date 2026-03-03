@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: safechat
+      POSTGRES_PASSWORD: safechat_dev
+      POSTGRES_DB: safechat_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U safechat"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://safechat:safechat_dev@db:5432/safechat_development
+      REDIS_URL: redis://redis:6379/1
+      RAILS_ENV: development
+      DEVISE_JWT_SECRET_KEY: safechat_jwt_secret_key_for_development_only
+      SECRET_KEY_BASE: safechat_secret_key_base_for_development_only_change_in_production
+      RAILS_LOG_TO_STDOUT: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - backend_bundle:/usr/local/bundle
+
+volumes:
+  postgres_data:
+  redis_data:
+  backend_bundle:

@@ -1,0 +1,17 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  url: <%= ENV.fetch("DATABASE_URL", nil) %>
+  database: safechat_development
+
+test:
+  <<: *default
+  database: safechat_test
+
+production:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
