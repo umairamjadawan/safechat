@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Switch, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import ContactPicker from '../../components/ContactPicker';
 import { useChats } from '../../context/ChatContext';
 import { useAuth } from '../../context/AuthContext';
@@ -8,6 +9,7 @@ import { getUserKeys } from '../../services/api';
 import { generateGroupKey, encryptGroupKey } from '../../services/crypto';
 import { distributeGroupKeys } from '../../services/api';
 import { showAlert } from '../../utils/alert';
+import { colors } from '../../theme';
 
 interface SelectedUser {
   id: string;
@@ -91,15 +93,23 @@ export default function NewChatScreen({ navigation }: any) {
     <View style={styles.container}>
       <View style={styles.options}>
         <View style={styles.groupToggle}>
-          <Text style={styles.groupLabel}>Group Chat</Text>
-          <Switch value={isGroup} onValueChange={setIsGroup} trackColor={{ true: '#0084ff' }} />
+          <View style={styles.groupLabelRow}>
+            <Ionicons name="people" size={20} color={colors.textPrimary} />
+            <Text style={styles.groupLabel}>Group Chat</Text>
+          </View>
+          <Switch
+            value={isGroup}
+            onValueChange={setIsGroup}
+            trackColor={{ false: '#E0E0E0', true: colors.primaryLight }}
+            thumbColor={colors.white}
+          />
         </View>
 
         {isGroup && (
           <TextInput
             style={styles.groupInput}
             placeholder="Group name"
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.textSecondary}
             value={groupTitle}
             onChangeText={setGroupTitle}
           />
@@ -127,7 +137,9 @@ export default function NewChatScreen({ navigation }: any) {
           style={[styles.createButton, creating && styles.createButtonDisabled]}
           onPress={handleCreate}
           disabled={creating}
+          activeOpacity={0.8}
         >
+          <Ionicons name={isGroup ? 'people' : 'chatbubble'} size={20} color={colors.white} />
           <Text style={styles.createButtonText}>
             {creating ? 'Creating...' : isGroup ? 'Create Group' : 'Start Chat'}
           </Text>
@@ -140,13 +152,13 @@ export default function NewChatScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   options: {
     paddingHorizontal: 16,
     paddingTop: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.divider,
     paddingBottom: 12,
   },
   groupToggle: {
@@ -155,46 +167,53 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
+  groupLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   groupLabel: {
     fontSize: 16,
-    color: '#1a1a1a',
+    color: colors.textPrimary,
     fontWeight: '500',
   },
   groupInput: {
     height: 44,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#F0F2F5',
     borderRadius: 10,
     paddingHorizontal: 16,
     fontSize: 16,
     marginBottom: 8,
-    color: '#1a1a1a',
+    color: colors.textPrimary,
   },
   selected: {
     marginTop: 4,
   },
   selectedLabel: {
     fontSize: 13,
-    color: '#0084ff',
+    color: colors.primary,
     fontWeight: '600',
     marginBottom: 2,
   },
   selectedNames: {
     fontSize: 13,
-    color: '#666',
+    color: colors.textSecondary,
   },
   createButton: {
     margin: 16,
     height: 50,
-    backgroundColor: '#0084ff',
+    backgroundColor: colors.primaryDark,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
   createButtonDisabled: {
     backgroundColor: '#ccc',
   },
   createButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 17,
     fontWeight: '600',
   },

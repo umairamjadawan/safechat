@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Conversation } from '../context/ChatContext';
+import { colors, getAvatarColor } from '../theme';
 
 interface Props {
   conversation: Conversation;
@@ -21,9 +23,11 @@ export default function ChatListItem({ conversation, onPress }: Props) {
     .toUpperCase()
     .slice(0, 2);
 
+  const avatarBg = getAvatarColor(title);
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
-      <View style={styles.avatar}>
+      <View style={[styles.avatar, { backgroundColor: avatarBg }]}>
         <Text style={styles.avatarText}>{initials}</Text>
       </View>
       <View style={styles.content}>
@@ -31,9 +35,12 @@ export default function ChatListItem({ conversation, onPress }: Props) {
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
           {time ? <Text style={styles.time}>{time}</Text> : null}
         </View>
-        <Text style={styles.preview} numberOfLines={1}>
-          {lastMsg ? '🔒 Encrypted message' : 'No messages yet'}
-        </Text>
+        <View style={styles.previewRow}>
+          <Ionicons name="lock-closed" size={13} color={colors.textSecondary} />
+          <Text style={styles.preview} numberOfLines={1}>
+            {lastMsg ? ' Encrypted message' : ' No messages yet'}
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -44,23 +51,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
+    paddingVertical: 14,
+    backgroundColor: colors.white,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: colors.divider,
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#0084ff',
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 14,
   },
   avatarText: {
-    color: '#fff',
-    fontSize: 18,
+    color: colors.white,
+    fontSize: 19,
     fontWeight: '700',
   },
   content: {
@@ -73,18 +79,22 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   title: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
-    color: '#1a1a1a',
+    color: colors.textPrimary,
     flex: 1,
   },
   time: {
     fontSize: 12,
-    color: '#999',
+    color: colors.textSecondary,
     marginLeft: 8,
+  },
+  previewRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   preview: {
     fontSize: 14,
-    color: '#666',
+    color: colors.textSecondary,
   },
 });

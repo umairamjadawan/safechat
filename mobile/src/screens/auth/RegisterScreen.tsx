@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
+import { colors } from '../../theme';
 
 export default function RegisterScreen({ navigation }: any) {
   const { signUp } = useAuth();
@@ -35,116 +38,141 @@ export default function RegisterScreen({ navigation }: any) {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={styles.inner}>
-        <Text style={styles.logo}>SafeChat</Text>
-        <Text style={styles.subtitle}>Create your secure account</Text>
+    <LinearGradient
+      colors={[colors.authGradientStart, colors.authGradientEnd]}
+      style={styles.gradient}
+    >
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <View style={styles.inner}>
+          <View style={styles.logoSection}>
+            <Ionicons name="shield-checkmark" size={48} color={colors.white} />
+            <Text style={styles.logo}>SafeChat</Text>
+            <Text style={styles.subtitle}>Create your secure account</Text>
+          </View>
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+          <View style={styles.card}>
+            {error ? <Text style={styles.error}>{error}</Text> : null}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Display Name"
-          placeholderTextColor="#999"
-          value={displayName}
-          onChangeText={setDisplayName}
-          autoCapitalize="words"
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Display Name"
+              placeholderTextColor={colors.textSecondary}
+              value={displayName}
+              onChangeText={setDisplayName}
+              autoCapitalize="words"
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#999"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor={colors.textSecondary}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password (min 6 characters)"
-          placeholderTextColor="#999"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Password (min 6 characters)"
+              placeholderTextColor={colors.textSecondary}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Create Account</Text>
-          )}
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
+              {loading ? (
+                <ActivityIndicator color={colors.white} />
+              ) : (
+                <Text style={styles.buttonText}>Create Account</Text>
+              )}
+            </TouchableOpacity>
+          </View>
 
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.linkButton}>
-          <Text style={styles.linkText}>Already have an account? <Text style={styles.linkBold}>Sign In</Text></Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.linkButton}>
+            <Text style={styles.linkText}>Already have an account? <Text style={styles.linkBold}>Sign In</Text></Text>
+          </TouchableOpacity>
 
-        <Text style={styles.notice}>
-          Your encryption keys are generated on-device and never leave your phone.
-        </Text>
-      </View>
-    </KeyboardAvoidingView>
+          <View style={styles.noticeRow}>
+            <Ionicons name="lock-closed" size={14} color="rgba(255,255,255,0.6)" />
+            <Text style={styles.notice}>
+              Your encryption keys are generated on-device and never leave your phone.
+            </Text>
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   inner: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 32,
+    paddingHorizontal: 24,
+  },
+  logoSection: {
+    alignItems: 'center',
+    marginBottom: 32,
   },
   logo: {
     fontSize: 36,
     fontWeight: '800',
-    color: '#0084ff',
-    textAlign: 'center',
-    marginBottom: 8,
+    color: colors.white,
+    marginTop: 8,
   },
   subtitle: {
     fontSize: 15,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 40,
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: 4,
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
   },
   error: {
-    color: '#ff3b30',
+    color: colors.error,
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 16,
-    backgroundColor: '#fff0f0',
+    backgroundColor: colors.errorBg,
     padding: 10,
     borderRadius: 8,
     overflow: 'hidden',
   },
   input: {
     height: 50,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F5F6F8',
     borderRadius: 12,
     paddingHorizontal: 16,
     fontSize: 16,
     marginBottom: 14,
-    color: '#1a1a1a',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
+    color: colors.textPrimary,
   },
   button: {
     height: 50,
-    backgroundColor: '#0084ff',
+    backgroundColor: colors.primaryDark,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 6,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 17,
     fontWeight: '600',
   },
@@ -154,17 +182,22 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: 15,
-    color: '#666',
+    color: 'rgba(255,255,255,0.8)',
   },
   linkBold: {
-    color: '#0084ff',
-    fontWeight: '600',
+    color: colors.white,
+    fontWeight: '700',
+  },
+  noticeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 24,
+    gap: 6,
   },
   notice: {
-    marginTop: 32,
     fontSize: 12,
-    color: '#999',
-    textAlign: 'center',
+    color: 'rgba(255,255,255,0.6)',
     lineHeight: 18,
   },
 });

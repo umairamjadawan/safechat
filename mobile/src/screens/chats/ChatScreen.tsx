@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
 import MessageBubble from '../../components/MessageBubble';
 import MessageInput from '../../components/MessageInput';
@@ -12,6 +13,7 @@ import {
   decryptGroupMessage,
   decryptGroupKey,
 } from '../../services/crypto';
+import { colors } from '../../theme';
 
 interface DecryptedMessage {
   id: string;
@@ -207,8 +209,8 @@ export default function ChatScreen({ route, navigation }: any) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0084ff" />
-        <Text style={styles.loadingText}>{debugInfo}</Text>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.loadingText}>Setting up encryption...</Text>
       </View>
     );
   }
@@ -216,8 +218,9 @@ export default function ChatScreen({ route, navigation }: any) {
   return (
     <View style={styles.container}>
       <View style={styles.encryptionBanner}>
+        <Ionicons name="lock-closed" size={12} color={colors.textSecondary} />
         <Text style={styles.encryptionText}>
-          Messages are end-to-end encrypted | {debugInfo}
+          Messages are end-to-end encrypted
         </Text>
       </View>
       {error ? (
@@ -241,6 +244,7 @@ export default function ChatScreen({ route, navigation }: any) {
         contentContainerStyle={styles.messageList}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
+            <Ionicons name="chatbubble-ellipses-outline" size={48} color={colors.textSecondary} />
             <Text style={styles.emptyText}>No messages yet. Say hello!</Text>
           </View>
         }
@@ -253,37 +257,40 @@ export default function ChatScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.chatBg,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.chatBg,
   },
   loadingText: {
     marginTop: 12,
-    fontSize: 13,
-    color: '#666',
+    fontSize: 14,
+    color: colors.textSecondary,
   },
   encryptionBanner: {
-    backgroundColor: '#fef9c3',
-    paddingVertical: 6,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FDF8E1',
+    paddingVertical: 5,
+    gap: 4,
   },
   encryptionText: {
-    fontSize: 11,
-    color: '#92400e',
+    fontSize: 12,
+    color: colors.textSecondary,
   },
   errorBanner: {
-    backgroundColor: '#fee2e2',
+    backgroundColor: colors.errorBg,
     paddingVertical: 10,
     paddingHorizontal: 16,
     alignItems: 'center',
   },
   errorText: {
     fontSize: 14,
-    color: '#dc2626',
+    color: colors.error,
     fontWeight: '500',
   },
   messageList: {
@@ -295,9 +302,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 40,
     transform: [{ scaleY: -1 }],
+    gap: 8,
   },
   emptyText: {
     fontSize: 15,
-    color: '#999',
+    color: colors.textSecondary,
   },
 });

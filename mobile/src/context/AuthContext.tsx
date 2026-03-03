@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import * as api from '../services/api';
-import { storeToken, getToken, clearToken, clearKeys, getOrCreateKeyPair } from '../services/keyManager';
+import { storeToken, getToken, clearToken, getOrCreateKeyPair } from '../services/keyManager';
 import { initDatabase, clearLocalMessages } from '../services/messageStore';
 
 interface User {
@@ -77,7 +77,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await api.logout();
     } catch {}
     await clearToken();
-    await clearKeys();
+    // Keys are intentionally preserved so re-logging in reuses the same
+    // key pair and existing encrypted messages remain decryptable.
     await clearLocalMessages();
     setUser(null);
   }
